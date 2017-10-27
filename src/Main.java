@@ -18,12 +18,12 @@ public class Main {
 
         MemoMatrix<Solution> memo = new MemoMatrix<>(numDigits, numDigits);
 
-        int bestScore = calculateGame(digits.length - 1, 0, digits, memo)
+        int bestScore = gameSolution(digits.length - 1, 0, digits, memo)
                 .total;
         memo.printMatrix();
     }
 
-    private static Solution calculateGame (int i, int j, int[] digits,
+    private static Solution gameSolution (int i, int j, int[] digits,
             MemoMatrix<Solution> memo) {
         if (i < 0 || j < 0 || i >= digits.length || j >= digits.length) {
             return new Solution(0, 0, false);
@@ -37,9 +37,9 @@ public class Main {
             return memo.recall(i, j);
         }
 
-        Solution solFront = calculateGame(i, j + 1, digits, memo);
+        Solution solFront = gameSolution(i, j + 1, digits, memo);
         int frontTotal = solFront.previousTotal + digits[j];
-        Solution solBack = calculateGame(i - 1, j, digits, memo);
+        Solution solBack = gameSolution(i - 1, j, digits, memo);
         int backTotal = solBack.previousTotal + digits[i];
 
         Solution sol;
