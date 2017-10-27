@@ -37,16 +37,16 @@ public class Main {
             return memo.recall(i, j);
         }
 
-        Solution solFront = gameSolution(i, j + 1, digits, memo);
-        int frontTotal = solFront.previousTotal + digits[j];
-        Solution solBack = gameSolution(i - 1, j, digits, memo);
-        int backTotal = solBack.previousTotal + digits[i];
+        Solution solFirst = gameSolution(i, j + 1, digits, memo);
+        int firstTotal = solFirst.previousTotal + digits[j];
+        Solution solLast = gameSolution(i - 1, j, digits, memo);
+        int lastTotal = solLast.previousTotal + digits[i];
 
         Solution sol;
-        if (frontTotal >= backTotal) {
-            sol = new Solution(frontTotal, solFront.total, true);
+        if (firstTotal >= lastTotal) {
+            sol = new Solution(firstTotal, solFirst.total, true);
         } else {
-            sol = new Solution(backTotal, solBack.total, false);
+            sol = new Solution(lastTotal, solLast.total, false);
         }
         memo.memoize(i, j, sol);
         return sol;

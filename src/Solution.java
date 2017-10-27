@@ -1,16 +1,16 @@
 public class Solution {
     int total;
     int previousTotal;
-    boolean fromFront;
+    boolean fromFirst;
 
-    public Solution (int total, int previousTotal, boolean fromFront) {
+    public Solution (int total, int previousTotal, boolean fromFirst) {
         this.total = total;
         this.previousTotal = previousTotal;
-        this.fromFront = fromFront;
+        this.fromFirst = fromFirst;
     }
 
     @Override
     public String toString () {
-        return String.format("%d,%s", total, (fromFront ? "F(↓)" : "B(←)"));
+        return String.format("%d,%s", total, (fromFirst ? "F(↓)" : "L(←)"));
     }
 }
