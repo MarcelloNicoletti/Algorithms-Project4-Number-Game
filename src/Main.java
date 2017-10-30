@@ -6,21 +6,14 @@ public class Main {
 
     public static void main (String args[]) {
         System.out.println("Welcome to the number game.");
-        System.out.print("How many digits will there be? > ");
-        int numDigits = stdIn.nextInt();
-        stdIn.nextLine();
-        int[] digits = new int[numDigits];
 
-        for (int i = 0; i < numDigits; i++) {
-            System.out.print("Enter digit for position " + (i + 1) + " > ");
-            digits[i] = stdIn.nextInt() % 10;
-            stdIn.nextLine();
-        }
+        int[] digits = getDigits();
+
         System.out.println("Playing with " + Arrays.toString(digits));
 
-        MemoMatrix<Solution> memo = new MemoMatrix<>(numDigits, numDigits);
-
-        int bestScore = calcGameSolution(digits.length - 1, 0, digits, memo)
+        MemoMatrix<GameSolution> memo = new MemoMatrix<>(digits.length,
+                digits.length);
+        int bestScore = calcGameSolutions(digits.length - 1, 0, digits, memo)
                 .total;
         memo.printMatrix();
 
@@ -29,13 +22,27 @@ public class Main {
         playGame(digits, memo);
     }
 
-    private static Solution calcGameSolution (int i, int j, int[] digits,
-            MemoMatrix<Solution> memo) {
+    private static int[] getDigits () {
+        System.out.print("How many digits will there be? > ");
+        int numDigits = stdIn.nextInt();
+        stdIn.nextLine();
+        int[] digits = new int[numDigits];
+
+        for (int i = 0; i < digits.length; i++) {
+            System.out.print("Enter digit for position " + (i + 1) + " > ");
+            digits[i] = stdIn.nextInt() % 10;
+            stdIn.nextLine();
+        }
+        return digits;
+    }
+
+    private static GameSolution calcGameSolutions (int i, int j, int[] digits,
+            MemoMatrix<GameSolution> memo) {
         if (i < 0 || j < 0 || i >= digits.length || j >= digits.length) {
-            return new Solution(0, 0, false);
+            return new GameSolution(0, 0, false);
         }
         if (i < j) {
-            Solution sol = new Solution(0, 0, false);
+            GameSolution sol = new GameSolution(0, 0, false);
             memo.memoize(i, j, sol);
             return sol;
         }
@@ -43,23 +50,23 @@ public class Main {
             return memo.recall(i, j);
         }
 
-        Solution solFirst = calcGameSolution(i, j + 1, digits, memo);
+        GameSolution solFirst = calcGameSolutions(i, j + 1, digits, memo);
         int firstTotal = solFirst.previousTotal + digits[j];
 
-        Solution solLast = calcGameSolution(i - 1, j, digits, memo);
+        GameSolution solLast = calcGameSolutions(i - 1, j, digits, memo);
         int lastTotal = solLast.previousTotal + digits[i];
 
-        Solution sol;
+        GameSolution sol;
         if (firstTotal >= lastTotal) {
-            sol = new Solution(firstTotal, solFirst.total, true);
+            sol = new GameSolution(firstTotal, solFirst.total, true);
         } else {
-            sol = new Solution(lastTotal, solLast.total, false);
+            sol = new GameSolution(lastTotal, solLast.total, false);
         }
         memo.memoize(i, j, sol);
         return sol;
     }
 
-    private static void playGame (int[] digits, MemoMatrix<Solution> memo) {
+    private static void playGame (int[] digits, MemoMatrix<GameSolution> memo) {
         int i = digits.length - 1, // Back pointer
                 j = 0, // Front pointer
                 round = 1,
@@ -80,7 +87,7 @@ public class Main {
 
             if (round % 2 == 0) {
                 // Computer Turn
-                Solution sol = memo.recall(i, j);
+                GameSolution sol = memo.recall(i, j);
                 if (sol.fromFirst) {
                     System.out.println("Computer chooses First");
                     sumComputer += digits[j];
