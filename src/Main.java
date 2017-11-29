@@ -13,7 +13,8 @@ public class Main {
 
         MemoMatrix<GameSolution> memo = new MemoMatrix<>(numbers.length,
                 numbers.length);
-        int bestScore = calcGameSolutions(numbers.length - 1, 0, numbers, memo)
+        int bestScore = calcGameSolutions(numbers.length - 1, 0, numbers,
+            memo)
                 .total;
         memo.printMatrix();
 
@@ -72,11 +73,11 @@ public class Main {
                 round = 1,
                 sumPlayer = 0,
                 sumComputer = 0,
-                maxNumLen = Integer.toString(Arrays.stream(numbers).max()
-                        .orElse(Integer.MIN_VALUE)).length();
+                maxNumLen = Integer.toString(Arrays.stream(numbers)
+                        .reduce(Integer.MIN_VALUE, Integer::max)).length();
 
         while (i >= j) {
-            System.out.printf("Round %d: ", round);
+            System.out.printf("%nRound %d: ", round);
             for (int k = 0; k < numbers.length; k++) {
                 if (k < j || k > i) {
                     System.out.printf("%"+maxNumLen+"s ", " ");
@@ -91,11 +92,13 @@ public class Main {
                 // Computer Turn
                 GameSolution sol = memo.recall(i, j);
                 if (sol.fromFirst) {
-                    System.out.println("Computer chooses First");
+                    System.out.printf("Computer chooses First (+%d)%n",
+                            numbers[j]);
                     sumComputer += numbers[j];
                     j++;
                 } else {
-                    System.out.println("Computer chooses Last");
+                    System.out.printf("Computer chooses Last (+%d)%n",
+                            numbers[i]);
                     sumComputer += numbers[i];
                     i--;
                 }
@@ -111,11 +114,13 @@ public class Main {
                                  Integer.parseInt(choiceStr) == numbers[j]);
 
                 if (choseFront) {
-                    System.out.println("Player chooses First");
+                    System.out.printf("Player chooses First (+%d)%n",
+                            numbers[j]);
                     sumPlayer += numbers[j];
                     j++;
                 } else {
-                    System.out.println("Player chooses Last");
+                    System.out.printf("Player chooses Last (+%d)%n",
+                            numbers[i]);
                     sumPlayer += numbers[i];
                     i--;
                 }
