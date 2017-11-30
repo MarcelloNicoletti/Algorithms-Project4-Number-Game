@@ -2,10 +2,12 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
+    private static final boolean PLAY_SUMS_GAME = true;
     private static Scanner stdIn = new Scanner(System.in);
 
     public static void main (String args[]) {
-        System.out.println("Welcome to the number game.");
+        System.out.printf("Welcome to the %s game.%n",
+            PLAY_SUMS_GAME ? "sums" : "products");
 
         int[] numbers = getNumbers();
 
@@ -13,13 +15,23 @@ public class Main {
 
         MemoMatrix<GameSolution> memo = new MemoMatrix<>(numbers.length,
             numbers.length);
-        int bestScore = calcSumsGameSolutions(numbers.length - 1, 0, numbers,
-            memo).total;
+        int bestScore;
+        if (PLAY_SUMS_GAME) {
+            bestScore = calcSumsGameSolutions(numbers.length - 1, 0, numbers,
+                memo).total;
+        } else {
+            bestScore = calcProductsGameSolutions(numbers.length - 1, 0,
+                numbers, memo).total;
+        }
         memo.printMatrix();
 
         System.out.println("\nPlaying the game against computer.\n");
 
-        playSumsGame(numbers, memo);
+        if (PLAY_SUMS_GAME) {
+            playSumsGame(numbers, memo);
+        } else {
+            playProductsGame(numbers, memo);
+        }
     }
 
     private static int[] getNumbers () {
